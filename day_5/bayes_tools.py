@@ -66,8 +66,9 @@ def bayes_reverse(observations, sensor, transition_list, action_list = None):
             # If I didn't put my single transition matrix in an iterable, put it in one.
             transition_list = [np.asarray(transition_list)]
     timesteps = len(observations)
-    rev_raw = np.empty((3, timesteps))
-    rev_raw[:,-1] = (1, 1, 1) # starting point
+    n_states = sensor.shape[0]
+    rev_raw = np.empty((n_states, timesteps))
+    rev_raw[:,-1] = (1) * n_states # starting point
     for step in range(timesteps-1, 0, -1): # for every timestep except zero
         action = int(action_list[step])
         transition = transition_list[action]
