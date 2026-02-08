@@ -1,51 +1,10 @@
 import numpy as np
+from day_5.bayes_tools import *
 
-"""
-    Part A:
-    We can approach this simply because the door in this system never acts spontaneously, and opening always has a 4/5 chance of working.
-    For the door to remain closed, you need the 0.5 that it starts closed, then the 1/5 ^ 3 that it fails to open three times in a row.
-    This probability is 0.004, so the door has an 0.996 probability of being open at the end.
-"""
-
-def bayes_filter_step(last_belief, observation, sensor_model, transition_model):
-    """
-    Arguments
-    last_belief: Vector of probability distribution from the previous step
-    observation: State number that the sensor has observed
-    sensor_model: Matrix with rows for truth and columns for observation
-    transition_model: Matrix with rows for last states and columns for next states.
-        In case of an actuator, pass the transition_model that corresponds to the action being taken this step.
-
-    Returns
-    next_belief: Vector of probability distribution for each possible state.
-        Not normalized. To normalize, divide by its sum.
-    """
-    # n_states = len(last_belief)
-    # states = range(n_states)
-    # prior = np.zeros(n_states)
-    # for next_state in states:
-    #     for last_state in states:
-    #         prior[next_state] += last_belief[last_state] * transition_model[last_state, next_state]
-    prior = last_belief @ transition_model
-    likelihood = sensor_model[:,observation] # likelihood of each true state given the observation
-    next_belief = likelihood * prior
-    return next_belief.copy()
-
-def bayes_reverse_step(next_belief, next_observation, sensor_model, transition_model):
-    """
-    Arguments
-    next_belief: Vector of probability distribution from the next step
-    next_observation: State number that the sensor observes in the next step
-    sensor_model: Matrix with rows for truth and columns for observation
-    transition_model: Matrix with rows for last states and columns for next states.
-        In case of an actuator, pass the transition_model that corresponds to the action taken in the NEXT step.
-
-    Returns
-    belief: Vector of probability distribution for each possible state.
-        Not normalized.
-    """
-    belief = transition_model @ (next_belief * sensor_model[:, next_observation]) # sensor_model slice is a vector, so it gets elementwise-multiplied with the other vector before matrix multiplication
-    return belief.copy()
+# Part A:
+# We can approach this simply because the door in this system never acts spontaneously, and opening always has a 4/5 chance of working.
+# For the door to remain closed, you need the 0.5 that it starts closed, then the 1/5 ^ 3 that it fails to open three times in a row.
+# This probability is 0.004, so the door has an 0.996 probability of being open at the end.
 
 if __name__ == "__main__":
     # All matrices are true state in rows and output in columns
