@@ -79,3 +79,22 @@ print("My version:")
 print(corrcoef(X))
 print("\nNumpy:")
 print(np.corrcoef(X))
+
+# Covariance:
+# My version:
+# [[11.71       -4.286     ]
+#  [-4.286       2.14413333]]
+
+# Numpy:
+# [[11.71       -4.286     ]
+#  [-4.286       2.14413333]]
+
+
+# Corrcoef:
+# My version:
+# [[ 1.         -0.85535781]
+#  [-0.85535781  1.        ]]
+
+# Numpy:
+# [[ 1.         -0.85535781]
+#  [-0.85535781  1.        ]]
