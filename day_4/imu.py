@@ -187,21 +187,134 @@ if __name__ == "__main__":
     print(f"Mean Residual Pitch: {mean_residuals_y}, Variance: {variance_residuals_y}")
     print(f"Mean Residual Yaw: {mean_residuals_z}, Variance: {variance_residuals_z}")
 
-    """
-    These residuals look like a lot, like they are comparable to the magnitude of the measurements to begin with.
-    However, they seem relatively consistent throughout the course of the measurement.
-
-    Part D:
-    In general, I am confused as to why we attempted to correlate acceleration in different axes for example
-    Perhaps high correlations would meamn lots of constrained movement that appears across axes? 
-    It seems possibly expected that there are high correlations between, say, y and z rotations but not others just based on 
-        the nature of the movement being captured.
     
-    It seems like for the IMU vs. Vicon comparison, the correlation is quite low (less than 0.3),
-        and the magnitude of the residuals is almost as high as the measurements themselves.
-        But the data seem to be all over the place, so I'm having trouble even characterizing the noise
-        or the quality of the measurements.
+    # These residuals look like a lot, like they are comparable to the magnitude of the measurements to begin with.
+    # However, they seem relatively consistent throughout the course of the measurement.
 
-    It doesn't seem like we should trust the raw IMU data very much at all, especially not the y axis which shows near-zero
-        correlation with the Vicon data.
-    """
+    # Part D:
+    # In general, I am confused as to why we attempted to correlate acceleration in different axes for example
+    # Perhaps high correlations would meamn lots of constrained movement that appears across axes? 
+    # It seems possibly expected that there are high correlations between, say, y and z rotations but not others just based on 
+    #     the nature of the movement being captured.
+    
+    # It seems like for the IMU vs. Vicon comparison, the correlation is quite low (less than 0.3),
+    #     and the magnitude of the residuals is almost as high as the measurements themselves.
+    #     But the data seem to be all over the place, so I'm having trouble even characterizing the noise
+    #     or the quality of the measurements.
+
+    # It doesn't seem like we should trust the raw IMU data very much at all, especially not the y axis which shows near-zero
+    #     correlation with the Vicon data.
+
+#     === Acceleration (x, y, z) ===
+# Covariance:
+#  [[ 2.26456107e-02 -4.71148351e-03 -5.26712019e-05]
+#  [-4.71148351e-03  1.35404957e-02 -1.05112843e-03]
+#  [-5.26712019e-05 -1.05112843e-03  4.04986117e-02]]
+# Correlation:
+#  [[ 1.         -0.26905953 -0.00173925]
+#  [-0.26905953  1.         -0.04488678]
+#  [-0.00173925 -0.04488678  1.        ]]
+
+# === Attitude (x, y, z) ===
+# Covariance:
+#  [[ 4.69720699e-03 -7.82262882e-04 -1.45880596e-04]
+#  [-7.82262882e-04  5.64988258e-03  8.02045917e-03]
+#  [-1.45880596e-04  8.02045917e-03  3.20040253e+00]]
+# Correlation:
+#  [[ 1.         -0.15184943 -0.0011898 ]
+#  [-0.15184943  1.          0.05964544]
+#  [-0.0011898   0.05964544  1.        ]]
+
+# === Rotation Rate (x, y, z) ===
+# Covariance:
+#  [[ 0.28665589 -0.0680202   0.08761712]
+#  [-0.0680202   0.294176    0.23758535]
+#  [ 0.08761712  0.23758535  0.87575282]]
+# Correlation:
+#  [[ 1.         -0.23423613  0.17487099]
+#  [-0.23423613  1.          0.46808559]
+#  [ 0.17487099  0.46808559  1.        ]]
+
+# === Gravity vs Mag vs Acceleration (x) ===
+# Covariance:
+#  [[ 4.21047049e-03  1.35024258e-01 -3.64107011e-03]
+#  [ 1.35024258e-01  1.01494143e+02 -9.98807992e-02]
+#  [-3.64107011e-03 -9.98807992e-02  2.26456107e-02]]
+# Correlation:
+#  [[ 1.          0.20655038 -0.37288225]
+#  [ 0.20655038  1.         -0.06588241]
+#  [-0.37288225 -0.06588241  1.        ]]
+
+# === Gravity vs Mag vs Acceleration (y) ===
+# Covariance:
+#  [[ 5.10449811e-03  2.16581969e-01 -1.33705522e-03]
+#  [ 2.16581969e-01  1.05567386e+02 -4.25659496e-02]
+#  [-1.33705522e-03 -4.25659496e-02  1.35404957e-02]]
+# Correlation:
+#  [[ 1.          0.29503999 -0.16082573]
+#  [ 0.29503999  1.         -0.03560247]
+#  [-0.16082573 -0.03560247  1.        ]]
+
+# === Gravity vs Mag vs Acceleration (z) ===
+# Covariance:
+#  [[ 5.40952109e-04  2.37241134e-02 -9.21919060e-04]
+#  [ 2.37241134e-02  1.39385427e+01 -3.55994838e-02]
+#  [-9.21919060e-04 -3.55994838e-02  4.04986117e-02]]
+# Correlation:
+#  [[ 1.          0.27321334 -0.19696693]
+#  [ 0.27321334  1.         -0.04738217]
+#  [-0.19696693 -0.04738217  1.        ]]
+
+# === Rotation Rate vs Acceleration (x) ===
+# Covariance:
+#  [[0.28665589 0.01540043]
+#  [0.01540043 0.02264561]]
+# Correlation:
+#  [[1.         0.19114382]
+#  [0.19114382 1.        ]]
+
+# === Rotation Rate vs Acceleration (y) ===
+# Covariance:
+#  [[0.294176   0.00736345]
+#  [0.00736345 0.0135405 ]]
+# Correlation:
+#  [[1.         0.11667031]
+#  [0.11667031 1.        ]]
+
+# === Rotation Rate vs Acceleration (z) ===
+# Covariance:
+#  [[0.87575282 0.01167156]
+#  [0.01167156 0.04049861]]
+# Correlation:
+#  [[1.         0.06197521]
+#  [0.06197521 1.        ]]
+
+# === IMU vs Vicon Attitude (x) ===
+# Covariance:
+#  [[0.00469721 0.00138626]
+#  [0.00138626 0.00602286]]
+# Correlation:
+#  [[1.         0.26062858]
+#  [0.26062858 1.        ]]
+
+# === IMU vs Vicon Attitude (y) ===
+# Covariance:
+#  [[ 0.00564988 -0.00018726]
+#  [-0.00018726  0.00382002]]
+# Correlation:
+#  [[ 1.         -0.04030842]
+#  [-0.04030842  1.        ]]
+
+# === IMU vs Vicon Attitude (z) ===
+# Covariance:
+#  [[3.20040253 0.49428167]
+#  [0.49428167 3.3784921 ]]
+# Correlation:
+#  [[1.         0.15031792]
+#  [0.15031792 1.        ]]
+
+# === Residuals Mean and Variance ===
+# Mean Residual Roll: 0.26350513592430697, Variance: 0.00794750962517633
+# Mean Residual Pitch: 0.3488178248526874, Variance: 0.009844361879761709
+# Mean Residual Yaw: -0.27999082160328165, Variance: 5.590295952122837
+    
