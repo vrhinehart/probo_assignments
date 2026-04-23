@@ -1,26 +1,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 import time
 from numba import njit, prange
 
 moves = np.asarray(((1, 0), (-1, 0), (0, 1), (0, -1))) #x, y
 world_size = 20
-reward = 10 # for visiting a new space
-adjacency_reward = 0 # additional reward for adjacent new spaces
+reward = 2 # for visiting a new space
+adjacency_reward = 2 # additional reward for adjacent new spaces
 cost = -1 # for revisiting a space
 penalty = 0 # for hitting the boundary
-discount = 0.9
+discount = 0.5
 rewards = np.ones((world_size,world_size)) * reward
 rewards_earned = np.zeros_like(rewards)
 
 #rng = np.random.default_rng()
 
-n_steps = 400
+n_steps = 200
 pos = np.empty((n_steps+1, 2))
 pos[0] = np.asarray((0,0))
 
 attempts_per_move = 1000
-horizon = 1000
+horizon = 350
 
 def add_to_average(old_average, n, new_value):
     return (old_average * n + new_value) / (n + 1)
@@ -65,12 +66,14 @@ for robot_step in range(n_steps):
     
     for move in range(len(moves)):
         next_pos = pos[robot_step + 1] + moves[move]
-        next_pos_tuple = tuple(next_pos.astype(int))
-        try:
-            if rewards[next_pos_tuple] >= reward:
-                rewards[next_pos_tuple] += adjacency_reward
-        except IndexError:
-            pass
+        if (next_pos[0] >= 0 and next_pos[0] < world_size and
+            next_pos[1] >= 0 and next_pos[1] < world_size):
+            next_pos_tuple = tuple(next_pos.astype(int))
+            try:
+                if rewards[next_pos_tuple] >= reward:
+                    rewards[next_pos_tuple] += adjacency_reward
+            except IndexError:
+                pass
 
     print(robot_step)
 
@@ -112,7 +115,15 @@ ax1.set_title('Robot Trajectory')
 ax1.grid(True)
 
 # Right plot: rewards array
-im = ax2.imshow(rewards.T, origin='lower', cmap='RdYlGn', extent=(0, world_size, 0, world_size), vmin=-5, vmax=5)
+max_reward = np.max(rewards)
+min_reward = np.min(rewards)
+
+colors = ["red", "white", "green"]
+custom_cmap = LinearSegmentedColormap.from_list("RdWhGn", colors)
+
+norm = TwoSlopeNorm(vmin=min_reward, vcenter=0, vmax=max_reward)
+
+im = ax2.imshow(rewards.T, origin='lower', cmap=custom_cmap, extent=(0, world_size, 0, world_size), norm=norm)
 ax2.set_xlabel('X')
 ax2.set_ylabel('Y')
 ax2.set_title('Rewards Grid')
